@@ -1,0 +1,178 @@
+<% layout("/layouts/boilerplate.ejs") %>
+
+<div class="row">
+    <div class="col-8 offset-2">
+        <h3><b><%= listing.title %></b></h3>
+        <div class="card-show">
+            <img src="<%= listing.image.url %>" class="card-img-top show-img" alt="listing_image">
+            <div class="card-body">
+                <p class="card-text">
+                    <br />
+                    <i>Owned by: <%= listing.owner?.username || 'Unknown' %></i>
+                    <br />
+                    <%= listing.description %><br />
+                    &#8377;<%= (Number(listing.price) || 0).toLocaleString("en-IN") %> /night<br />
+                    <%= listing.location %><br />
+                    <%= listing.country %>
+                </p>
+            </div>
+        </div>
+        <br />
+
+        <% if (currUser && listing.owner._id.equals(currUser._id)) { %>
+            <div class="btns d-flex gap-2">
+                <a href="/listings/<%= listing._id %>/edit" class="btn btn-dark">Edit</a>
+                <form method="POST" action="/listings/<%= listing._id %>?_method=DELETE">
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            </div>
+        <% } %>
+    </div>
+</div>
+
+<!-- Review Form -->
+<% if (currUser) { %>
+<div class="row my-4">
+    <div class="col-md-8 col-lg-8 mx-auto">
+        <div class="card shadow-lg p-4 review-card">
+            <h3 class="text-center text-primary">Leave a Review</h3>
+            <form action="/listings/<%= listing._id %>/reviews" method="POST">
+                <div class="mb-3">
+                    <label for="comment" class="form-label fw-bold">Your Comment:</label>
+                    <textarea name="review[comment]" id="comment" class="form-control" rows="4" required></textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="rating" class="form-label fw-bold">Your Rating:</label>
+                    <select name="review[rating]" id="rating" class="form-select" required>
+                        <option value="" disabled selected>Select Rating</option>
+                        <option value="1">⭐ 1 - Poor</option>
+                        <option value="2">⭐⭐ 2 - Fair</option>
+                        <option value="3">⭐⭐⭐ 3 - Good</option>
+                        <option value="4">⭐⭐⭐⭐ 4 - Very Good</option>
+                        <option value="5">⭐⭐⭐⭐⭐ 5 - Excellent</option>
+                    </select>
+                </div>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary px-4 py-2 shadow-sm">
+                        <i class="fas fa-paper-plane"></i> Submit Review
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<% } %>
+
+<hr />
+ <% if(listing.reviews.length >0) { %>
+<h4>All Reviews</h4>
+<div class="row">
+    <% for (let review of listing.reviews) { %>
+        <div class="col-md-6 col-lg-4 mb-3">
+            <div class="card review-card p-3">
+                <div class="card-body">
+                    <h5 class="card-title"><%= review.author.username %></h5>
+                    <p class="card-text">
+                        <span id="preview-<%= review._id %>">
+                            <%= review.comment.length > 100 ? review.comment.substring(0, 100) + '...' : review.comment %>
+                        </span>
+                        <% if (review.comment.length > 100) { %>
+                            <button class="btn btn-link btn-sm p-0 text-primary show-more-btn"
+                                data-review-id="<%= review._id %>"
+                                data-review-comment="<%= review.comment.replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/\n/g, ' ').replace(/\r/g, '') %>">
+                                Show More
+                            </button>
+                        <% } %>
+                    </p>
+                    <p class="card-text">Rating: <%= review.rating %> ⭐</p>
+                </div>
+                <div class="d-flex justify-content-between align-items-center px-3 pb-2">
+                    <button class="btn btn-sm btn-outline-danger delete-btn" data-review-id="<%= review._id %>">
+                        <i class="fas fa-trash-alt"></i> Delete
+                    </button>
+                </div>
+            </div>
+        </div>
+    <% } %>
+</div>
+<% } %>
+<div class="col-8 offset-3 mb-3">
+    <h3>Where you'll be</h3>
+    <div id="map">
+        <script>
+            function isWebglSupported() {
+                if (window.WebGLRenderingContext) {
+                    const canvas = document.createElement('canvas');
+                    try {
+                        // Note that { failIfMajorPerformanceCaveat: true } can be passed as a second argument
+                        // to canvas.getContext(), causing the check to fail if hardware rendering is not available. See
+                        // https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement/getContext
+                        // for more details.
+                        const context = canvas.getContext('webgl2') || canvas.getContext('webgl');
+                        if (context && typeof context.getParameter == 'function') {
+                            return true;
+                        }
+                    } catch (e) {
+                        // WebGL is supported, but disabled
+                    }
+                    return false;
+                }
+                // WebGL not supported
+                return false;
+            }
+            if (!isWebglSupported()) {
+                alert('Your browser does not support WebGL');
+            } else {
+                const map = new maplibregl.Map({
+                    container: 'map',
+                    style:
+                    'https://api.maptiler.com/maps/streets/style.json?key=get_your_own_OpIi9ZULNHzrESv6T2vL',
+                    center: [77.209,28.6139],
+                    zoom: 9
+                });
+            }
+        </script>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div id="deleteConfirmModal" class="modal fade" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-sm modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">Confirm Delete</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <p>Are you sure you want to delete this review?</p>
+                <form id="deleteForm" method="POST">
+                    <button type="submit" class="btn btn-danger">Yes, Delete</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Show More Button
+        document.querySelectorAll(".show-more-btn").forEach((btn) => {
+            btn.addEventListener("click", function () {
+                const reviewId = this.getAttribute("data-review-id");
+                const fullComment = this.getAttribute("data-review-comment");
+                document.getElementById(`preview-${reviewId}`).innerHTML = fullComment;
+                this.style.display = "none";
+            });
+        });
+
+        // Delete Modal
+        document.querySelectorAll(".delete-btn").forEach((btn) => {
+            btn.addEventListener("click", function () {
+                const reviewId = this.getAttribute("data-review-id");
+                document.getElementById("deleteForm").action = `/listings/<%= listing._id %>/reviews/${reviewId}?_method=DELETE`;
+                new bootstrap.Modal(document.getElementById("deleteConfirmModal")).show();
+            });
+        });
+    });
+</script>
