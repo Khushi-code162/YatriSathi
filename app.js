@@ -100,7 +100,9 @@ const validateReview = (req,res,next) =>{
     }
 
 };
-
+app.get("/", (req, res) => {
+    res.redirect("/listings");
+  });
 
 app.use("/" , user);
 app.use("/listings" , listings);
@@ -137,9 +139,7 @@ app.use((err, req, res, next) => {
     let { statusCode = 500, message = "Something went wrong" } = err;
     res.status(statusCode).render("error.ejs", { err });
 });
-app.get("/", (req, res) => {
-    res.redirect("/listings");
-  });
+
 
 app.listen(8080, () =>{
     console.log("server is running on port 8080");
