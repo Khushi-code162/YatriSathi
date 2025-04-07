@@ -185,3 +185,87 @@ form.d-flex {
     align-items: center;
 
   }
+  .filter i {
+    color:#A31D1D;
+    font-size: 18px;
+    margin-bottom: 5px;
+    transition: transform 0.2s ease;
+  }
+  
+  .filter:hover i {
+    transform: scale(1.2);
+    color:black;
+  }
+
+  #filters-icon a{
+    text-decoration:none;
+    color:#3b3c36 !important;
+  }
+  
+  .filter-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    overflow-x: auto;
+    padding: 1rem;
+    gap: 1rem;
+    white-space: nowrap;
+  }
+  
+  .filter-scroll {
+    display: flex;
+    gap: 1rem;
+    overflow-x: auto;
+    flex: 1;
+    scrollbar-width: none;
+  }
+  
+  .filter-scroll::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .filter {
+    text-align: center;
+    text-decoration: none;
+    color: #7c2525;
+    flex-shrink: 0;
+  }
+  
+  .tax-switch {
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+  @media (max-width: 576px) {
+    .filter-scroll i {
+      font-size: 1rem; /* reduce icon size */
+    }
+  
+    .filter-scroll p,
+    .filter-scroll .filter {
+      font-size: 0.75rem; /* reduce label text size */
+    }
+  
+    .tax-switch label {
+      font-size: 0.75rem; /* reduce switch label size */
+    }
+  
+    .tax-switch input[type="checkbox"] {
+      transform: scale(0.8); /* shrink switch */
+    }
+    @media (max-width: 768px) {
+        .navbar form {
+          width: 100%;
+          margin-top: 10px;
+        }
+      
+        .navbar .form-control {
+          width: 70%;
+        }
+      
+        .navbar .btn {
+          width: 25%;
+        }
+      }
+      
+  }
+    

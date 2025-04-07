@@ -24,6 +24,26 @@
         />
         <div class="invalid-feedback">Please enter a title.</div>
       </div>
+      <!-- Add this below the location input and above the submit button -->
+<div class="mb-3">
+  <label for="category" class="form-label">Category</label>
+  <select
+    class="form-select"
+    id="category"
+    name="Listing[category]"
+    required
+  >
+    <option value="" disabled selected>Select a category</option>
+    <option value="mountain">Mountain</option>
+    <option value="beach">Beach</option>
+    <option value="forest">Forest</option>
+    <option value="desert">Desert</option>
+    <option value="city">City</option>
+    <option value="village">Village</option>
+  </select>
+  <div class="invalid-feedback">Please select a category.</div>
+</div>
+
 
       <!-- Description -->
       <div class="mb-3">

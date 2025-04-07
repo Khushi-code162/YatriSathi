@@ -1,54 +1,34 @@
 <% layout("/layouts/boilerplate.ejs") %>
-
-  <div id="filters-icon">
-    <div class="filter">
-      <i class="fa-solid fa-fire"></i><br />
-      Trending
-    </div>
-    <div class="filter">
-      <i class="fa-solid fa-bed"></i><br />
-     Rooms
-    </div>
-    <div class="filter">
-      <i class="fa-solid fa-water-ladder"></i><br />
-     Amazing Pool
-    </div>
-    <div class="filter">
-      <i class="fa-solid fa-umbrella-beach"></i><br />
-     Beachfront
-    </div>
-    <div class="filter">
-      <i class="fa-regular fa-chess-rook"></i><br />
-    Castels
-    </div>
-    <div class="filter">
-      <i class="fa-solid fa-mountain"></i><br />
-     Mountain
-    </div>
-    <div class="filter">
-      <i class="fa-sharp fa-solid fa-mountain-city"></i><br />
-     Top Cities
-    </div>
-    <div class="filter">
-    <i class="fa-solid fa-tents"></i><br />
-     Tent House
-    </div>
-    
-    <div class="tax-switch">
-      <div class="form-check-reverse form-switch">
-        <input class="form-check-input" type="checkbox" role="switch" id="switchCheckDefault">
-        <label class="form-check-label" for="switchCheckDefault">Dispaly total after taxes</label>
-      </div>
-    </div>
+<% if (typeof category !== 'undefined') { %>
+  <h2>Category: <%= category.charAt(0).toUpperCase() + category.slice(1) %></h2>
+<% }%>
+<div class="filter-bar">
+  <div class="filter-scroll">
+    <a href="/listings/category/trending" class="filter"><i class="fa-solid fa-fire"></i><br>Trending</a>
+    <a href="/listings/category/rooms" class="filter"><i class="fa-solid fa-bed"></i><br>Rooms</a>
+    <a href="/listings/category/pool" class="filter"><i class="fa-solid fa-water-ladder"></i><br>Pool</a>
+    <a href="/listings/category/beach" class="filter"><i class="fa-solid fa-umbrella-beach"></i><br>Beach</a>
+    <a href="/listings/category/castle" class="filter"><i class="fa-solid fa-chess-rook"></i><br>Castle</a>
+    <a href="/listings/category/mountain" class="filter"><i class="fa-solid fa-mountain"></i><br>Mountain</a>
+    <a href="/listings/category/city" class="filter"><i class="fa-solid fa-city"></i><br>City</a>
+   
   </div>
+
+  <div class="tax-switch">
+    <label class="form-check-label" for="taxSwitch">Display total after taxes</label>
+    <input class="form-check-input" type="checkbox" id="taxSwitch">
+  </div>
+</div>
+
+
    <!-- <form method="GET" action="/listings/new">
     <button>Create new listing</button>
 
    </form>  -->
-   <div class="row  row-cols-lg-3 row-cols-md-2 row-cols-sm-1 mt-2">
+   <div class="row  row-cols-lg-3 row-cols-md-2 row-cols-sm-1 mt-2 g-3">
    <% for(let listing of allListings) { %>
     <a href="/listings/<%=listing._id %>" class="listing-link">
-   <div class="card col" >
+   <div class="card col mx-3" >
     <img src="<%= listing.image.url %>" class="card-img-top" alt="listing_image " style="height:19rem " >
     
     <div class="card-body">
@@ -66,15 +46,11 @@
    </div>
 
    <script>
-    let taxSwitch = document.getElementById("switchCheckDefault");
-    taxSwitch.addEventListener("change", ()=> {
-    let taxInfo= document.getElementsByClassName("tax-info");
-    for (info of taxInfo) {
-     if(info.style.display != "inline"){
-      info.style.display = "inline";
-     } else {
-      info.style.display = "none";
-     }
-    }
+    let taxSwitch = document.getElementById("taxSwitch");
+    taxSwitch.addEventListener("change", () => {
+      let taxInfo = document.getElementsByClassName("tax-info");
+      for (let info of taxInfo) {
+        info.style.display = (info.style.display !== "inline") ? "inline" : "none";
+      }
     });
-   </script>
+  </script>

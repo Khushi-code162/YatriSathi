@@ -13,12 +13,33 @@ const upload = multer({ storage });
 
 
 const listingController = require("../controllers/listings.js");
+ 
 
 // index route
 router.get("/", wrapAsync(listingController.index));
 
 // new route
 router.get("/new", isLoggedIn, listingController.renderNewForm);
+
+router.get("/category/:category", wrapAsync(async (req, res) => {
+  const { category } = req.params;
+  const listings = await Listing.find({ category: category });
+  res.render("listings/index", { allListings: listings, category });
+}));
+
+router.get("/search", wrapAsync(async (req, res) => {
+  const { q } = req.query;
+
+  const listings = await Listing.find({
+    $or: [
+      { country: { $regex: q, $options: "i" } },
+      { location: { $regex: q, $options: "i" } }
+    ]
+  });
+
+  res.render("listings/index", { allListings: listings, category: `Results for "${q}"` });
+
+}));
 
 // show route
 // router.get("/:id", wrapAsync(listingController.showListing));
